@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+	<!-- Versión del modelo POM que usa Maven (siempre 4.0.0) -->
+	<modelVersion>4.0.0</modelVersion>
+
+	<!-- Proyecto padre: hereda configuraciones, versiones de dependencias
+	     y plugins de Spring Boot, evitando tener que declarar versiones manualmente -->
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>4.0.3</version>
+		<relativePath/>
+	</parent>
+
+	<!-- Identidad del proyecto -->
+	<groupId>com</groupId>                          <!-- Organización o paquete base -->
+	<artifactId>clasedominio</artifactId>           <!-- Nombre único del proyecto -->
+	<version>0.0.1-SNAPSHOT</version>              <!-- Versión actual (SNAPSHOT = en desarrollo) -->
+	<name>clasedominio</name>
+	<description>Demo project for Spring Boot</description>
+
+	<!-- Campos opcionales vacíos (URL, licencia, desarrolladores, control de versiones) -->
+	<url/>
+	<licenses><license/></licenses>
+	<developers><developer/></developers>
+	<scm>
+		<connection/><developerConnection/><tag/><url/>
+	</scm>
+
+	<!-- Propiedades globales del proyecto -->
+	<properties>
+		<java.version>21</java.version> <!-- Versión de Java que usará el compilador -->
+	</properties>
+
+	<dependencies>
+
+		<!-- Motor de plantillas HTML del lado del servidor.
+		     Permite generar vistas dinámicas en los archivos .html de templates/ -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-thymeleaf</artifactId>
+		</dependency>
+
+		<!-- Servidor web embebido (Tomcat) + soporte para controladores MVC (@Controller, @GetMapping, etc.) -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+
+		<!-- ORM con Hibernate: permite mapear clases Java (@Entity) a tablas de base de datos
+		     y realizar operaciones CRUD sin escribir SQL manual -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-jpa</artifactId>
+		</dependency>
+
+		<!-- Validación de datos con anotaciones como @NotNull, @Size, @Email en las entidades -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-validation</artifactId>
+		</dependency>
+
+		<!-- Sesiones-->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-security</artifactId>
+		</dependency>
+
+		<!-- Driver JDBC de PostgreSQL. Solo se necesita en tiempo de ejecución,
+		     no para compilar el código fuente -->
+		<dependency>
+			<groupId>org.postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+
+		<!-- Herramienta de desarrollo: reinicia la app automáticamente al detectar cambios en el código.
+		     Es opcional y solo se incluye en desarrollo, no en el JAR final -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-devtools</artifactId>
+			<scope>runtime</scope>
+			<optional>true</optional>
+		</dependency>
+
+		<!-- Lombok: genera automáticamente getters, setters, constructores, etc. mediante anotaciones
+		     (@Getter, @Setter, @Data...). Solo se necesita al compilar, no en el JAR final -->
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<version>1.18.36</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<!-- Dependencias para pruebas unitarias e integración (JUnit, Mockito, etc.).
+		     Solo se incluye al correr tests, no en el JAR de producción -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+	</dependencies>
+
+	<build>
+		<plugins>
+
+			<!-- Plugin del compilador de Java. Se configura aquí para que Lombok
+			     pueda procesar sus anotaciones ANTES de que el compilador genere el bytecode -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<annotationProcessorPaths>
+						<path>
+							<groupId>org.projectlombok</groupId>
+							<artifactId>lombok</artifactId>
+						</path>
+					</annotationProcessorPaths>
+				</configuration>
+			</plugin>
+
+			<!-- Plugin de Spring Boot: permite ejecutar la app con "mvnw spring-boot:run"
+			     y empaquetar un JAR ejecutable. Lombok se excluye del JAR final porque
+			     ya cumplió su función en tiempo de compilación -->
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+				<configuration>
+					<excludes>
+						<exclude>
+							<groupId>org.projectlombok</groupId>
+							<artifactId>lombok</artifactId>
+						</exclude>
+					</excludes>
+				</configuration>
+			</plugin>
+
+		</plugins>
+	</build>
+
+</project>

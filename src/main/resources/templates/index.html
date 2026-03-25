@@ -1,0 +1,132 @@
+<!--
+    index.html - Vista principal del sistema de gestion de individuos
+    Muestra la tabla con todos los registros y permite buscar por nombre.
+    Autor: Juan Manuel Lagos - Ficha 3114733 - ADSO SENA
+-->
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" th:href="@{/style.css}">
+    <title>Individuos</title>
+</head>
+<body>
+    <div class="page">
+
+        <!-- Encabezado con titulo y contador de registros -->
+        <div class="page-header">
+            <h1 class="page-title">Individuos</h1>
+            <p class="page-count"
+               th:if="${!#lists.isEmpty(lista)}"
+               th:text="${#lists.size(lista)} + ' individuo' + (${#lists.size(lista)} > 1 ? 's' : '')">
+            </p>
+        </div>
+
+        <!-- Barra de acciones: buscador + boton nuevo + recargar -->
+        <div class="action-bar">
+            <!-- Formulario de busqueda por nombre -->
+            <form th:action="@{/}" method="get" class="search">
+                <svg class="search-icon" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+                </svg>
+                <input class="search-input" type="text" name="q" th:value="${q}"
+                       placeholder="Buscar por nombre..." autocomplete="off">
+            </form>
+
+            <div class="action-bar-right">
+                <!-- Boton para crear un nuevo individuo -->
+                <a th:href="@{/nuevo}" class="btn btn-primary">
+                    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                        <path d="M12 5v14M5 12h14"/>
+                    </svg>
+                    Nuevo Individuo
+                </a>
+                <!-- Boton para recargar la lista -->
+                <form th:action="@{/}" method="get" class="search" style="width:auto;">
+                    <button type="submit" class="btn-icon" title="Recargar lista">
+                        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path d="M1 4v6h6"/><path d="M3.51 15a9 9 0 102.13-9.36L1 10"/>
+                        </svg>
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Tabla con la lista de individuos (se muestra si hay datos) -->
+        <div class="card" th:if="${!#lists.isEmpty(lista)}">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Apellido</th>
+                        <th>Edad</th>
+                        <th>Correo</th>
+                        <th>Telefono</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Se recorre la lista de individuos con th:each -->
+                    <tr th:each="ind : ${lista}">
+                        <td data-label="Nombre" class="cell-name" th:text="${ind.nombre}"></td>
+                        <td data-label="Apellido" th:text="${ind.apellido}"></td>
+                        <td data-label="Edad" th:text="${ind.edad}"></td>
+                        <td data-label="Correo" class="cell-email" th:text="${ind.correo}"></td>
+                        <td data-label="Telefono" class="cell-phone" th:text="${ind.numero} ?: 'No registrado'"></td>
+                        <td data-label="Acciones">
+                            <!-- Botones de accion separados con divisores -->
+                            <div class="row-actions">
+                                <!-- Ver detalle -->
+                                <a class="row-action row-action-view" th:href="@{/detalle(id=${ind.id})}" title="Ver detalle">
+                                    <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                                        <circle cx="12" cy="12" r="3"/>
+                                    </svg>
+                                    <span>Ver</span>
+                                </a>
+                                <div class="action-divider"></div>
+                                <!-- Editar registro -->
+                                <a class="row-action row-action-edit" th:href="@{/editar(id=${ind.id})}" title="Editar registro">
+                                    <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                        <path d="M17 3a2.828 2.828 0 114 4L7.5 20.5 2 22l1.5-5.5L17 3z"/>
+                                    </svg>
+                                    <span>Editar</span>
+                                </a>
+                                <div class="action-divider"></div>
+                                <!-- Eliminar registro (pide confirmacion) -->
+                                <a class="row-action row-action-delete" th:href="@{/eliminar(id=${ind.id})}" title="Eliminar registro"
+                                   onclick="return confirm('¿Estas seguro de que deseas eliminar este registro?');">
+                                    <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                        <polyline points="3 6 5 6 21 6"/>
+                                        <path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/>
+                                    </svg>
+                                    <span>Eliminar</span>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Estado vacio: se muestra cuando no hay registros -->
+        <div class="card" th:if="${#lists.isEmpty(lista)}">
+            <div class="empty-state">
+                <svg width="48" height="48" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                    <path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/>
+                </svg>
+                <div class="empty-state-title">No hay individuos registrados</div>
+                <div class="empty-state-text">Comienza agregando el primer registro al sistema.</div>
+                <a th:href="@{/nuevo}" class="btn btn-primary">Crear el primero</a>
+            </div>
+        </div>
+
+        <!-- Pie de pagina -->
+        <footer class="page-footer">
+            <span>Juan Manuel Lagos</span> &mdash; Ficha 3114733 &mdash; ADSO SENA
+        </footer>
+
+    </div>
+</body>
+</html>

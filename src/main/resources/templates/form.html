@@ -1,0 +1,88 @@
+<!--
+    form.html - Formulario para crear o editar un individuo
+    Se reutiliza la misma vista para ambas acciones; si el objeto
+    tiene id, se muestra como edicion, si no, como creacion.
+    Autor: Juan Manuel Lagos - Ficha 3114733 - ADSO SENA
+-->
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" th:href="@{/style.css}">
+    <title th:text="${individuo.id != null} ? 'Editar Individuo' : 'Nuevo Individuo'">Formulario</title>
+</head>
+<body>
+    <div class="page">
+
+        <!-- Breadcrumb: muestra la ruta de navegacion -->
+        <nav class="breadcrumb">
+            <a th:href="@{/}">Individuos</a>
+            <span class="sep">/</span>
+            <span class="current" th:text="${individuo.id != null} ? 'Editar' : 'Nuevo'"></span>
+        </nav>
+
+        <!-- Tarjeta del formulario -->
+        <div class="form-card">
+            <h2 class="form-title"
+                th:text="${individuo.id != null} ? 'Editar Individuo' : 'Nuevo Individuo'">
+            </h2>
+
+            <!-- El formulario envia los datos al endpoint /guardar por POST -->
+            <form th:action="@{/guardar}" th:object="${individuo}" method="post">
+                <!-- Campo oculto para el id (necesario al editar) -->
+                <input type="hidden" th:field="*{id}">
+
+                <!-- Campo: Nombre -->
+                <div class="form-group">
+                    <label class="form-label" for="nombre">Nombre</label>
+                    <input id="nombre" class="form-input" type="text" th:field="*{nombre}" placeholder="Ej: Juan">
+                    <span class="form-error" th:if="${#fields.hasErrors('nombre')}" th:errors="*{nombre}"></span>
+                </div>
+
+                <!-- Campo: Apellido -->
+                <div class="form-group">
+                    <label class="form-label" for="apellido">Apellido</label>
+                    <input id="apellido" class="form-input" type="text" th:field="*{apellido}" placeholder="Ej: Lagos">
+                    <span class="form-error" th:if="${#fields.hasErrors('apellido')}" th:errors="*{apellido}"></span>
+                </div>
+
+                <!-- Campo: Edad -->
+                <div class="form-group">
+                    <label class="form-label" for="edad">Edad</label>
+                    <input id="edad" class="form-input" type="number" th:field="*{edad}" placeholder="Ej: 25">
+                </div>
+
+                <!-- Campo: Telefono -->
+                <div class="form-group">
+                    <label class="form-label" for="numero">Telefono</label>
+                    <input id="numero" class="form-input" type="text" th:field="*{numero}" placeholder="Ej: 3001234567">
+                    <span class="form-error" th:if="${#fields.hasErrors('numero')}" th:errors="*{numero}"></span>
+                </div>
+
+                <!-- Campo: Correo electronico -->
+                <div class="form-group">
+                    <label class="form-label" for="correo">Correo electronico</label>
+                    <input id="correo" class="form-input" type="email" th:field="*{correo}" placeholder="Ej: juan@correo.com">
+                </div>
+
+                <!-- Boton de envio (cambia el texto segun sea crear o editar) -->
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">
+                        <span th:text="${individuo.id != null} ? 'Guardar cambios' : 'Crear Individuo'"></span>
+                    </button>
+                </div>
+
+                <!-- Link para cancelar y volver a la lista -->
+                <a th:href="@{/}" class="btn-link">Cancelar</a>
+            </form>
+        </div>
+
+        <!-- Pie de pagina -->
+        <footer class="page-footer">
+            <span>Juan Manuel Lagos</span> &mdash; Ficha 3114733 &mdash; ADSO SENA
+        </footer>
+
+    </div>
+</body>
+</html>

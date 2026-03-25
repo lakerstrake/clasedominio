@@ -1,0 +1,80 @@
+<!--
+    detalle.html - Vista de detalle de un individuo
+    Muestra toda la informacion de un registro en una tarjeta
+    con opciones para editar, eliminar o volver a la lista.
+    Autor: Juan Manuel Lagos - Ficha 3114733 - ADSO SENA
+-->
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" th:href="@{/style.css}">
+    <title>Detalle</title>
+</head>
+<body>
+    <div class="page">
+
+        <!-- Breadcrumb: ruta de navegacion -->
+        <nav class="breadcrumb">
+            <a th:href="@{/}">Individuos</a>
+            <span class="sep">/</span>
+            <span class="current" th:text="${individuo.nombre} + ' ' + ${individuo.apellido}"></span>
+        </nav>
+
+        <!-- Enlace para volver a la lista -->
+        <a th:href="@{/}" class="back-link">
+            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path d="M19 12H5M12 19l-7-7 7-7"/>
+            </svg>
+            Volver a la lista
+        </a>
+
+        <!-- Tarjeta de detalle con toda la info del individuo -->
+        <div class="detail-card">
+            <!-- Encabezado con nombre completo -->
+            <div class="detail-header">
+                <h2 th:text="${individuo.nombre} + ' ' + ${individuo.apellido}">Nombre Completo</h2>
+            </div>
+            <!-- Fila: Nombre -->
+            <div class="detail-row">
+                <div class="detail-label">Nombre</div>
+                <div class="detail-value" th:text="${individuo.nombre}"></div>
+            </div>
+            <!-- Fila: Apellido -->
+            <div class="detail-row">
+                <div class="detail-label">Apellido</div>
+                <div class="detail-value" th:text="${individuo.apellido}"></div>
+            </div>
+            <!-- Fila: Edad -->
+            <div class="detail-row">
+                <div class="detail-label">Edad</div>
+                <div class="detail-value" th:text="${individuo.edad}"></div>
+            </div>
+            <!-- Fila: Telefono -->
+            <div class="detail-row">
+                <div class="detail-label">Telefono</div>
+                <div class="detail-value" th:text="${individuo.numero} ?: 'No registrado'"></div>
+            </div>
+            <!-- Fila: Correo -->
+            <div class="detail-row">
+                <div class="detail-label">Correo</div>
+                <div class="detail-value" th:text="${individuo.correo}"></div>
+            </div>
+            <!-- Botones de accion -->
+            <div class="detail-footer">
+                <a th:href="@{/editar(id=${individuo.id})}" class="btn btn-primary">Editar</a>
+                <a th:href="@{/eliminar(id=${individuo.id})}" class="btn btn-danger-outline"
+                   onclick="return confirm('¿Estas seguro de que deseas eliminar este registro?');">Eliminar</a>
+                <a th:href="@{/}" class="btn btn-secondary">Volver</a>
+            </div>
+        </div>
+
+        <!-- Pie de pagina -->
+        <footer class="page-footer">
+            <span>Juan Manuel Lagos</span> &mdash; Ficha 3114733 &mdash; ADSO SENA
+        </footer>
+
+    </div>
+</body>
+</html>

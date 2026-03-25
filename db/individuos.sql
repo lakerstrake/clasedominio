@@ -1,0 +1,14 @@
+
+
+CREATE TABLE IF NOT EXISTS individuos (
+    id BIGSERIAL PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL,
+    apellido VARCHAR(100) NOT NULL,
+    edad INTEGER NOT NULL CHECK (edad >= 0),
+    correo VARCHAR(255) NOT NULL UNIQUE,
+
+    creado_en TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+ALTER TABLE individuos ADD COLUMN numero VARCHAR(255);
+

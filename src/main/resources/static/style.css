@@ -1,0 +1,995 @@
+/*
+ * style.css - Hoja de estilos principal del sistema de gestion de individuos
+ * Proyecto: Clase Dominio - CRUD con Spring Boot y Thymeleaf
+ * Autor: Juan Manuel Lagos - Ficha 3114733 - ADSO SENA
+ *
+ * Se usa la fuente Inter de Google Fonts para un look limpio y moderno.
+ * Los colores y espaciados se manejan con variables CSS para que sea
+ * facil cambiar el tema de toda la app desde un solo lugar.
+ */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+/* Reset: quita margenes y paddings por defecto del navegador */
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+/* ============================================================
+   VARIABLES DE TEMA
+   Aqui se definen los colores, sombras y bordes que se
+   reutilizan en toda la hoja de estilos.
+   ============================================================ */
+:root {
+    /* Colores principales */
+    --accent:       #4f46e5;
+    --accent-hover: #4338ca;
+    --accent-light: #eef2ff;
+    --accent-ring:  rgba(79, 70, 229, 0.12);
+
+    /* Fondos */
+    --bg:           #f1f5f9;
+    --surface:      #ffffff;
+
+    /* Bordes */
+    --border:       rgba(0, 0, 0, 0.06);
+    --border-input: #e2e8f0;
+    --border-row:   #f1f5f9;
+
+    /* Textos */
+    --text:         #0f172a;
+    --text-body:    #334155;
+    --text-muted:   #64748b;
+    --text-faint:   #94a3b8;
+
+    /* Colores de estado */
+    --danger:       #dc2626;
+    --danger-bg:    #fef2f2;
+    --success:      #16a34a;
+    --success-bg:   #f0fdf4;
+    --info:         #2563eb;
+    --info-bg:      #eff6ff;
+
+    /* Efecto hover en filas de la tabla */
+    --row-hover:    #f8fafc;
+
+    /* Sombras en 3 niveles (chica, normal, grande) */
+    --shadow-sm:    0 1px 2px rgba(0,0,0,0.05);
+    --shadow:       0 1px 3px rgba(0,0,0,0.06), 0 6px 16px rgba(0,0,0,0.04);
+    --shadow-lg:    0 4px 6px rgba(0,0,0,0.04), 0 10px 30px rgba(0,0,0,0.08);
+
+    /* Bordes redondeados */
+    --radius:       10px;
+    --radius-lg:    14px;
+}
+
+/* ============================================================
+   ESTILOS BASE (html y body)
+   ============================================================ */
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text-body);
+    min-height: 100vh;
+    font-size: 14px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* ============================================================
+   ANIMACIONES
+   Se usan para que los elementos aparezcan suavemente
+   al cargar cada pagina.
+   ============================================================ */
+
+/* Aparicion desde abajo con desvanecimiento */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Aparicion mas sutil para cards */
+@keyframes slideUp {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Aparicion desde la izquierda */
+@keyframes slideRight {
+    from { opacity: 0; transform: translateX(-20px); }
+    to   { opacity: 1; transform: translateX(0); }
+}
+
+/* Efecto de brillo que pasa por encima de un elemento */
+@keyframes shimmer {
+    0%   { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+}
+
+/* Pulso suave para el logo del login */
+@keyframes pulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(79, 70, 229, 0.4); }
+    50%      { box-shadow: 0 0 0 12px rgba(79, 70, 229, 0); }
+}
+
+/* Aparicion escalonada para filas de la tabla */
+@keyframes fadeInRow {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ============================================================
+   LAYOUT PRINCIPAL
+   Contenedor centrado con ancho maximo de 960px
+   ============================================================ */
+.page {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 40px 32px 80px;
+    animation: fadeIn 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* ============================================================
+   ENCABEZADO DE PAGINA
+   Titulo principal y contador de registros
+   ============================================================ */
+.page-header {
+    margin-bottom: 28px;
+    animation: slideRight 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.page-title {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1.2;
+    letter-spacing: -0.03em;
+}
+
+.page-count {
+    font-size: 14px;
+    font-weight: 400;
+    color: var(--text-muted);
+    margin-top: 4px;
+}
+
+/* ============================================================
+   BREADCRUMB (migajas de pan)
+   Muestra la ruta de navegacion: Individuos / Editar
+   ============================================================ */
+.breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: var(--text-faint);
+    margin-bottom: 20px;
+    animation: slideRight 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.breadcrumb a {
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.15s;
+}
+
+.breadcrumb a:hover { color: var(--accent-hover); }
+
+.breadcrumb .sep { color: #cbd5e1; font-size: 12px; }
+
+.breadcrumb .current { color: var(--text-body); font-weight: 500; }
+
+/* ============================================================
+   BARRA DE ACCIONES
+   Contiene el buscador y el boton de "Nuevo Individuo"
+   ============================================================ */
+.action-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 20px;
+    animation: fadeIn 0.5s cubic-bezier(0.22, 1, 0.36, 1) 0.1s both;
+}
+
+.action-bar-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* ============================================================
+   BUSCADOR
+   Input con icono de lupa a la izquierda
+   ============================================================ */
+.search {
+    position: relative;
+    display: flex;
+    align-items: center;
+    background: none;
+    border: none;
+    padding: 0;
+    margin: 0;
+    box-shadow: none;
+    border-radius: 0;
+    width: auto;
+}
+
+.search-icon {
+    position: absolute;
+    left: 12px;
+    color: var(--text-faint);
+    pointer-events: none;
+    transition: color 0.2s;
+}
+
+/* Cuando el input tiene foco, el icono se pone del color principal */
+.search:focus-within .search-icon {
+    color: var(--accent);
+}
+
+.search-input {
+    width: 300px;
+    height: 40px;
+    padding: 0 14px 0 40px;
+    border: 1.5px solid var(--border-input);
+    border-radius: var(--radius);
+    font-family: inherit;
+    font-size: 13px;
+    color: var(--text-body);
+    background: var(--surface);
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s, width 0.3s ease;
+}
+
+.search-input::placeholder { color: var(--text-faint); }
+
+/* Al hacer clic, el buscador se expande un poco */
+.search-input:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-ring);
+    width: 340px;
+}
+
+/* ============================================================
+   BOTONES
+   Estilos para los distintos tipos de botones de la app
+   ============================================================ */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    height: 40px;
+    padding: 0 18px;
+    border: none;
+    border-radius: var(--radius);
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+    text-decoration: none;
+    white-space: nowrap;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Boton principal (azul/indigo) */
+.btn-primary {
+    background: var(--accent);
+    color: #fff;
+    box-shadow: 0 1px 2px rgba(79, 70, 229, 0.3);
+}
+
+.btn-primary:hover {
+    background: var(--accent-hover);
+    box-shadow: 0 4px 12px rgba(79, 70, 229, 0.4);
+    transform: translateY(-2px);
+}
+
+.btn-primary:active {
+    transform: translateY(0);
+    box-shadow: 0 1px 2px rgba(79, 70, 229, 0.3);
+}
+
+/* Efecto de brillo que pasa por el boton principal */
+.btn-primary::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255,255,255,0.15),
+        transparent
+    );
+    transition: left 0.5s ease;
+}
+
+.btn-primary:hover::after {
+    left: 100%;
+}
+
+/* Boton secundario (borde gris) */
+.btn-secondary {
+    background: var(--surface);
+    color: var(--text-muted);
+    border: 1.5px solid var(--border-input);
+}
+
+.btn-secondary:hover {
+    background: var(--row-hover);
+    color: var(--text-body);
+    border-color: #cbd5e1;
+    transform: translateY(-1px);
+}
+
+/* Boton de eliminar (borde rojo) */
+.btn-danger-outline {
+    background: var(--surface);
+    color: var(--danger);
+    border: 1.5px solid #fecaca;
+}
+
+.btn-danger-outline:hover {
+    background: var(--danger-bg);
+    border-color: var(--danger);
+    transform: translateY(-1px);
+}
+
+/* Boton solo icono (ej: recargar) */
+.btn-icon {
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    background: var(--surface);
+    border: 1.5px solid var(--border-input);
+    border-radius: var(--radius);
+    color: var(--text-faint);
+    cursor: pointer;
+    transition: all 0.25s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-icon:hover {
+    background: var(--row-hover);
+    color: var(--text-body);
+    border-color: #cbd5e1;
+    transform: rotate(90deg);
+}
+
+/* Boton tipo link (ej: "Cancelar" en el formulario) */
+.btn-link {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    text-decoration: none;
+    padding: 10px 0;
+    display: block;
+    text-align: center;
+    transition: color 0.2s;
+}
+
+.btn-link:hover { color: var(--accent); }
+
+/* ============================================================
+   CARD (tarjeta contenedora)
+   Se usa para envolver la tabla y el estado vacio
+   ============================================================ */
+.card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    animation: slideUp 0.5s cubic-bezier(0.22, 1, 0.36, 1) 0.15s both;
+}
+
+/* ============================================================
+   TABLA DE INDIVIDUOS
+   Muestra la lista con nombre, apellido, edad, correo,
+   telefono y las acciones (ver, editar, eliminar).
+   ============================================================ */
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+/* Encabezados de la tabla */
+thead th {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--text-faint);
+    padding: 14px 16px;
+    text-align: left;
+    border-bottom: 1.5px solid var(--border-input);
+    background: linear-gradient(to bottom, #fafbfc, #f6f7f9);
+}
+
+thead th:last-child { text-align: center; }
+
+/* Filas de la tabla con animacion escalonada */
+tbody tr {
+    border-bottom: 1px solid var(--border-row);
+    transition: all 0.2s ease;
+    animation: fadeInRow 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* Cada fila aparece un poco despues de la anterior */
+tbody tr:nth-child(1)  { animation-delay: 0.05s; }
+tbody tr:nth-child(2)  { animation-delay: 0.10s; }
+tbody tr:nth-child(3)  { animation-delay: 0.15s; }
+tbody tr:nth-child(4)  { animation-delay: 0.20s; }
+tbody tr:nth-child(5)  { animation-delay: 0.25s; }
+tbody tr:nth-child(6)  { animation-delay: 0.30s; }
+tbody tr:nth-child(7)  { animation-delay: 0.35s; }
+tbody tr:nth-child(8)  { animation-delay: 0.40s; }
+tbody tr:nth-child(9)  { animation-delay: 0.45s; }
+tbody tr:nth-child(10) { animation-delay: 0.50s; }
+
+tbody tr:last-child { border-bottom: none; }
+
+tbody tr:hover {
+    background: var(--row-hover);
+    box-shadow: inset 3px 0 0 var(--accent);
+}
+
+/* Celdas de la tabla */
+tbody td {
+    padding: 14px 16px;
+    font-size: 14px;
+    font-weight: 400;
+    color: var(--text-body);
+    vertical-align: middle;
+}
+
+/* Celda del nombre (resaltada) */
+.cell-name {
+    font-weight: 600;
+    color: var(--text);
+}
+
+/* Celda del correo */
+.cell-email {
+    color: var(--text-muted);
+    font-size: 13px;
+}
+
+/* Celda del telefono */
+.cell-phone {
+    color: var(--text-muted);
+    font-size: 13px;
+    font-variant-numeric: tabular-nums;
+}
+
+/* ============================================================
+   ACCIONES DE LA TABLA (Ver, Editar, Eliminar)
+   Cada accion tiene su propio color al pasar el mouse,
+   separadas por un divisor vertical.
+   ============================================================ */
+.row-actions {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+}
+
+/* Boton de accion individual */
+.row-action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    padding: 6px 10px;
+    border-radius: 6px;
+    background: transparent;
+    border: 1px solid transparent;
+    color: var(--text-faint);
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+    text-decoration: none;
+    font-size: 12px;
+    font-weight: 500;
+    font-family: inherit;
+}
+
+.row-action svg {
+    flex-shrink: 0;
+    transition: transform 0.2s ease;
+}
+
+/* Al pasar el mouse, el icono sube un poco */
+.row-action:hover svg {
+    transform: scale(1.15);
+}
+
+/* Hover azul para "Ver" */
+.row-action-view:hover {
+    color: var(--info);
+    background: var(--info-bg);
+    border-color: #bfdbfe;
+}
+
+/* Hover indigo para "Editar" */
+.row-action-edit:hover {
+    color: var(--accent);
+    background: var(--accent-light);
+    border-color: #c7d2fe;
+}
+
+/* Hover rojo para "Eliminar" */
+.row-action-delete:hover {
+    color: var(--danger);
+    background: var(--danger-bg);
+    border-color: #fecaca;
+}
+
+/* Linea divisora vertical entre acciones */
+.action-divider {
+    width: 1px;
+    height: 20px;
+    background: var(--border-input);
+    margin: 0 2px;
+}
+
+/* ============================================================
+   ESTADO VACIO
+   Se muestra cuando no hay registros en la BD
+   ============================================================ */
+.empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 80px 24px;
+    text-align: center;
+    animation: fadeIn 0.6s ease;
+}
+
+.empty-state svg {
+    color: #cbd5e1;
+    margin-bottom: 20px;
+    animation: pulse 2s infinite;
+}
+
+.empty-state-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 6px;
+}
+
+.empty-state-text {
+    font-size: 14px;
+    color: var(--text-muted);
+    margin-bottom: 24px;
+}
+
+/* ============================================================
+   TARJETA DE DETALLE
+   Muestra la informacion completa de un individuo
+   ============================================================ */
+.detail-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow);
+    max-width: 500px;
+    overflow: hidden;
+    animation: slideUp 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Encabezado de la tarjeta con el nombre completo */
+.detail-header {
+    padding: 24px 28px 20px;
+    border-bottom: 1.5px solid var(--border-input);
+    background: linear-gradient(to bottom, #fafbfc, #f6f7f9);
+}
+
+.detail-header h2 {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text);
+}
+
+/* Cada fila de dato: label + valor */
+.detail-row {
+    padding: 16px 28px;
+    border-bottom: 1px solid var(--border-row);
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+    transition: background 0.15s;
+}
+
+.detail-row:last-of-type { border-bottom: none; }
+
+.detail-row:hover { background: var(--row-hover); }
+
+.detail-label {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--text-faint);
+    min-width: 120px;
+    flex-shrink: 0;
+}
+
+.detail-value {
+    font-size: 15px;
+    font-weight: 400;
+    color: var(--text);
+}
+
+/* Pie de la tarjeta con botones de accion */
+.detail-footer {
+    display: flex;
+    gap: 10px;
+    padding: 20px 28px;
+    border-top: 1.5px solid var(--border-input);
+    background: linear-gradient(to bottom, #fafbfc, #f6f7f9);
+}
+
+/* ============================================================
+   FORMULARIO (Crear / Editar individuo)
+   ============================================================ */
+.form-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow);
+    max-width: 500px;
+    padding: 36px;
+    overflow: hidden;
+    animation: slideUp 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.form-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 28px;
+    letter-spacing: -0.01em;
+}
+
+/* Reset para el form dentro de la card */
+.form-card form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    background: none;
+    border: none;
+    padding: 0;
+    margin: 0;
+    box-shadow: none;
+    border-radius: 0;
+    width: 100%;
+}
+
+/* Grupo de campo: label + input + error */
+.form-group {
+    display: flex;
+    flex-direction: column;
+    animation: slideUp 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* Animacion escalonada para cada campo del formulario */
+.form-group:nth-child(2) { animation-delay: 0.05s; }
+.form-group:nth-child(3) { animation-delay: 0.10s; }
+.form-group:nth-child(4) { animation-delay: 0.15s; }
+.form-group:nth-child(5) { animation-delay: 0.20s; }
+.form-group:nth-child(6) { animation-delay: 0.25s; }
+
+.form-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-body);
+    margin-bottom: 6px;
+}
+
+.form-input {
+    width: 100%;
+    height: 42px;
+    padding: 0 14px;
+    border: 1.5px solid var(--border-input);
+    border-radius: var(--radius);
+    font-family: inherit;
+    font-size: 14px;
+    color: var(--text-body);
+    background: var(--surface);
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
+}
+
+.form-input::placeholder { color: var(--text-faint); }
+
+/* Al hacer foco, el input se eleva un poco y muestra anillo */
+.form-input:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-ring);
+    transform: translateY(-1px);
+}
+
+.form-input:hover:not(:focus) {
+    border-color: #cbd5e1;
+}
+
+/* Mensaje de error de validacion */
+.form-error {
+    font-size: 12px;
+    color: var(--danger);
+    margin-top: 6px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.form-error::before { content: '\26A0'; }
+
+/* Contenedor del boton de submit */
+.form-actions {
+    margin-top: 12px;
+}
+
+.form-actions .btn-primary {
+    width: 100%;
+    height: 44px;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+/* ============================================================
+   ENLACE DE VOLVER
+   Flecha + texto para regresar a la lista
+   ============================================================ */
+.back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-muted);
+    text-decoration: none;
+    margin-bottom: 24px;
+    transition: all 0.2s ease;
+}
+
+/* Al pasar el mouse, la flecha se mueve a la izquierda */
+.back-link:hover {
+    color: var(--accent);
+    transform: translateX(-3px);
+}
+
+/* ============================================================
+   PAGINA DE LOGIN
+   Centrada vertical y horizontalmente con fondo degradado
+   ============================================================ */
+.login-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 24px;
+    background: linear-gradient(135deg, #eef2ff 0%, #f1f5f9 50%, #faf5ff 100%);
+    position: relative;
+    overflow: hidden;
+}
+
+/* Circulos decorativos de fondo en el login */
+.login-wrapper::before {
+    content: '';
+    position: absolute;
+    width: 400px;
+    height: 400px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(79,70,229,0.08), transparent 70%);
+    top: -100px;
+    right: -100px;
+    animation: pulse 4s infinite;
+}
+
+.login-wrapper::after {
+    content: '';
+    position: absolute;
+    width: 300px;
+    height: 300px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(168,85,247,0.06), transparent 70%);
+    bottom: -80px;
+    left: -80px;
+    animation: pulse 5s infinite 1s;
+}
+
+/* Tarjeta del formulario de login */
+.login-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+    width: 100%;
+    max-width: 400px;
+    padding: 44px 36px;
+    animation: slideUp 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+    position: relative;
+    z-index: 1;
+}
+
+/* Icono de usuario en la parte superior */
+.login-logo {
+    width: 56px;
+    height: 56px;
+    background: linear-gradient(135deg, var(--accent), #7c3aed);
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 28px;
+    color: #fff;
+    animation: pulse 2.5s infinite;
+    box-shadow: 0 4px 15px rgba(79, 70, 229, 0.3);
+}
+
+.login-title {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--text);
+    text-align: center;
+    margin-bottom: 6px;
+    letter-spacing: -0.03em;
+}
+
+.login-subtitle {
+    font-size: 14px;
+    color: var(--text-muted);
+    text-align: center;
+    margin-bottom: 32px;
+}
+
+.login-card form {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+/* Alertas del login (error / exito) */
+.login-alert {
+    padding: 12px 16px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    animation: slideUp 0.3s ease;
+}
+
+.login-alert-error {
+    background: var(--danger-bg);
+    color: var(--danger);
+    border: 1px solid #fecaca;
+}
+
+.login-alert-success {
+    background: var(--success-bg);
+    color: var(--success);
+    border: 1px solid #bbf7d0;
+}
+
+/* ============================================================
+   FOOTER
+   Informacion del autor en la parte inferior de cada pagina
+   ============================================================ */
+.page-footer {
+    margin-top: 56px;
+    text-align: center;
+    font-size: 12px;
+    color: var(--text-faint);
+    padding-top: 24px;
+    border-top: 1px solid var(--border-input);
+    letter-spacing: 0.02em;
+}
+
+.page-footer span {
+    font-weight: 600;
+    color: var(--text-muted);
+}
+
+/* ============================================================
+   RESPONSIVE (Tablets y celulares)
+   La tabla se convierte en tarjetas apiladas en pantallas
+   menores a 768px.
+   ============================================================ */
+@media (max-width: 768px) {
+    .page { padding: 24px 16px 48px; }
+
+    .page-title { font-size: 22px; }
+
+    .action-bar {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .search-input { width: 100%; }
+    .search-input:focus { width: 100%; }
+
+    .action-bar-right { justify-content: space-between; }
+
+    /* La tabla se transforma en bloques apilados */
+    table, thead, tbody, th, td, tr { display: block; }
+
+    thead { display: none; }
+
+    tbody tr {
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 14px 16px;
+        margin-bottom: 10px;
+        background: var(--surface);
+        box-shadow: var(--shadow-sm);
+    }
+
+    tbody tr:hover {
+        box-shadow: var(--shadow);
+    }
+
+    tbody td {
+        padding: 5px 0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border: none;
+    }
+
+    /* Muestra el nombre de la columna a la izquierda */
+    tbody td::before {
+        content: attr(data-label);
+        font-size: 11px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        color: var(--text-faint);
+    }
+
+    .row-actions { justify-content: flex-end; }
+
+    .action-divider { display: none; }
+
+    .form-card, .detail-card { max-width: 100%; }
+
+    .detail-row {
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    .detail-label { min-width: auto; }
+
+    .login-card {
+        padding: 32px 24px;
+    }
+}
+
+/* En pantallas muy chicas, ocultar el texto de las acciones */
+@media (max-width: 480px) {
+    .row-action span { display: none; }
+    .row-action { padding: 6px 8px; }
+}
