@@ -31,3 +31,8 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### Taller LaTeX ###
+Taller_LaTeX_Fuentes/
+Taller_CRUD_SpringBoot_JuanLagos.docx
+Taller_CRUD_SpringBoot_JuanLagos.pdf
